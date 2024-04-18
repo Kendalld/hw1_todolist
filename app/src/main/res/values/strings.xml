@@ -4,4 +4,10 @@
     <string name="save">save</string>
     <string name="add_new_task">add_new_task</string>
     <string name="action_description">action_description</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="name">name</string>
+    <string name="Description">Description</string>
+    <string name="Select_Time">Select Time</string>
+    <string name="delete_task">Delete Task</string>
 </resources>

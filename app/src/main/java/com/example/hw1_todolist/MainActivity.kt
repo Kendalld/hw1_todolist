@@ -1,44 +1,113 @@
 package com.example.hw1_todolist
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.ListView
+
 import androidx.appcompat.app.AppCompatActivity
+
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.Observer
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.timepicker.MaterialTimePicker
+
+import java.time.LocalTime
+
+import com.example.hw1_todolist.*
+import com.google.android.material.timepicker.TimeFormat as TimeFormat1
+
+
 
 // MainActivity: The heart of your application's UI.
 // This class should coordinate the main user interactions and screen transitions.
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), TaskItemClickListener {
+
+    private lateinit var taskViewModel: TaskViewModel
+    private lateinit var taskItemAdapter: TaskItemAdapter
+
 
     // onCreate: Critical for initializing the activity and setting up the UI components.
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        //taskViewModel = ViewModelProvider(this)[TaskViewModel::class.java]
+        taskViewModel.taskItems.observe(this, Observer { taskItem ->
+            taskItemAdapter.updateTasks(taskItem)
+        })
+
         // RecyclerView setup: Essential for displaying a list of items.
         // You MUST properly initialize and configure your RecyclerView and its adapter.
-        val recyclerView = findViewById<RecyclerView>(R.id.rvTasks)
-        // TaskItemAdapter is your custom adapter for the RecyclerView. You need to create this file.
-        recyclerView.adapter = TaskItemAdapter(listOf()) // TODO: Initialize your TaskItemAdapter with data
-
-        // FloatingActionButton: Triggers the creation of new tasks.
-        // The onClickListener here is vital for handling user actions to add new tasks.
+        val recyclerViewTasks = findViewById<RecyclerView>(R.id.rvTasks)
         val fabNewTask = findViewById<FloatingActionButton>(R.id.fabNewTask)
-        fabNewTask.setOnClickListener {
-        }
+        val editTextTaskName = findViewById<EditText>(R.id.etName)
+        val editTextTaskDesc = findViewById<EditText>(R.id.etDesc)
+        val ivDelete = findViewById<ImageView>(R.id.ivDeleteTask)
 
-    // TODO: Implement the logic to show NewTaskSheet (you need to create this Activity/Fragment)
+
+        taskItemAdapter = TaskItemAdapter(emptyList(), this)
+        recyclerViewTasks.adapter = taskItemAdapter
+        recyclerViewTasks.layoutManager = LinearLayoutManager(this)
+
+        fabNewTask.setOnClickListener {
+            val taskName = editTextTaskName.text.toString()
+            val taskDesc = editTextTaskDesc.text.toString()
+
+            if (taskName.isNotEmpty()) {
+                showTimePicker { time ->
+                    val taskItem = TaskItem(
+                        name = taskName,
+                        desc = taskDesc,
+                        dueTime = time,
+                        completedDate = null,
+                        id = taskViewModel.nextTaskId()
+                    )
+                    taskViewModel.addTaskItem(taskItem.name, taskItem.desc, taskItem.dueTime, taskItem.completedDate) // explicitly called due to errors
+                    editTextTaskName.text.clear()
+                    editTextTaskDesc.text.clear()
+                }
+            }
         }
     }
 
-    // Instructions:
-    // x 1. Create NewTaskSheet.kt for handling the creation of new tasks.
-    // 2. Implement TaskItemAdapter.kt to manage how task data is bound to the RecyclerView.
-    // 3. Understand how TaskItem.kt represents individual task data.
-    // 4. TaskViewModel.kt should handle all your data logic, like adding and retrieving tasks.
-    // 5. TaskItemClickListener.kt and TaskItemViewHolder.kt are crucial for handling item interactions in your RecyclerView.
+    @SuppressLint("NewApi")
+    private fun showTimePicker(onTimeSet: (LocalTime) -> Unit) {
+        val picker = MaterialTimePicker.Builder()
+            .setTimeFormat(TimeFormat1.CLOCK_24H)
+            .setHour(12)
+            .setMinute(0)
+            .setTitleText("Select Due Time")
+            .build()
 
-    // To add new Kotlin files for your classes, like NewTaskSheet or TaskItemAdapter,
-// right-click on the package directory in the 'src/main/java' (or 'src/main/kotlin') folder in the Project view,
-// then choose 'New' > 'Kotlin File/Class', name your file/class
+        picker.addOnPositiveButtonClickListener {
+            onTimeSet(LocalTime.of(picker.hour, picker.minute))
+        }
+
+        picker.show(supportFragmentManager, "tag")
+    }
+
+    override fun editTaskItem(taskItem: TaskItem) {
+        NewTaskSheet(taskItem).show(supportFragmentManager, "newTaskTag")
+    }
+
+    override fun completeTaskItem(taskItem: TaskItem) {
+        taskViewModel.setCompleted(taskItem.id)
+    }
+
+    fun deleteTaskItem(taskItem: TaskItem) {
+        taskViewModel.deleteTaskItem(taskItem.id)
+    }
+
+}
+
 
 
