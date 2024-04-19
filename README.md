@@ -19,7 +19,6 @@ It utilizes modern Android development concepts like Fragments, RecyclerView, an
 
 - **Task Management:**
   - Add
-  - Edit
   - Delete
   - Mark tasks as complete
 - **Due Dates:** Set and track due dates and times for tasks.
@@ -38,7 +37,7 @@ It utilizes modern Android development concepts like Fragments, RecyclerView, an
 ## Credits
 
 - **ChatGPT:** Assisted with README and code documentation.
-- **Gemini:** Used in line tutorial chats.
+- **Gemini:** Used in line tutorial chats and suggestions to repair.
 - **Tutorial Video:** Insights on RecyclerView and Fragments implementation were adapted from [this tutorial](https://www.youtube.com/watch?v=RfIR4oaSVfQ).
 
 ## License/ Use Disclaimer
