@@ -1,30 +1,17 @@
 package com.example.hw1_todolist
 
-import android.annotation.SuppressLint
+// The API was updated to use Java.Time, older versions of android will break
+
+
 import android.os.Bundle
-
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.ListView
-
 import androidx.appcompat.app.AppCompatActivity
-
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.LinearLayoutManager
-
 import androidx.lifecycle.ViewModelProvider
+import com.example.hw1_todolist.R
+// I couldn't get non-extended to show text next to the plus sign
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import androidx.lifecycle.Observer
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.timepicker.MaterialTimePicker
-
-import java.time.LocalTime
-
-import com.example.hw1_todolist.*
-import com.google.android.material.timepicker.TimeFormat as TimeFormat1
-
 
 
 // MainActivity: The heart of your application's UI.
@@ -34,79 +21,48 @@ class MainActivity : AppCompatActivity(), TaskItemClickListener {
     private lateinit var taskViewModel: TaskViewModel
     private lateinit var taskItemAdapter: TaskItemAdapter
 
-
-    // onCreate: Critical for initializing the activity and setting up the UI components.
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        //taskViewModel = ViewModelProvider(this)[TaskViewModel::class.java]
-        taskViewModel.taskItems.observe(this, Observer { taskItem ->
-            taskItemAdapter.updateTasks(taskItem)
+        //View Models are used to store and manage UI-related data in a lifecycle conscious way
+        taskViewModel = ViewModelProvider(this).get(TaskViewModel::class.java)
+
+        // The "Observer" allows the live data to be displayed from the RecyclerView. I couldn't get it to work without it
+        taskViewModel.taskItems.observe(this, Observer { tasks ->
+            taskItemAdapter.updateTasks(tasks)
         })
 
-        // RecyclerView setup: Essential for displaying a list of items.
-        // You MUST properly initialize and configure your RecyclerView and its adapter.
         val recyclerViewTasks = findViewById<RecyclerView>(R.id.rvTasks)
-        val fabNewTask = findViewById<FloatingActionButton>(R.id.fabNewTask)
-        val editTextTaskName = findViewById<EditText>(R.id.etName)
-        val editTextTaskDesc = findViewById<EditText>(R.id.etDesc)
-        val ivDelete = findViewById<ImageView>(R.id.ivDeleteTask)
-
-
         taskItemAdapter = TaskItemAdapter(emptyList(), this)
         recyclerViewTasks.adapter = taskItemAdapter
         recyclerViewTasks.layoutManager = LinearLayoutManager(this)
 
+
+
+        val fabNewTask = findViewById<ExtendedFloatingActionButton>(R.id.fabNewTask)
+
         fabNewTask.setOnClickListener {
-            val taskName = editTextTaskName.text.toString()
-            val taskDesc = editTextTaskDesc.text.toString()
-
-            if (taskName.isNotEmpty()) {
-                showTimePicker { time ->
-                    val taskItem = TaskItem(
-                        name = taskName,
-                        desc = taskDesc,
-                        dueTime = time,
-                        completedDate = null,
-                        id = taskViewModel.nextTaskId()
-                    )
-                    taskViewModel.addTaskItem(taskItem.name, taskItem.desc, taskItem.dueTime, taskItem.completedDate) // explicitly called due to errors
-                    editTextTaskName.text.clear()
-                    editTextTaskDesc.text.clear()
-                }
-            }
+            // I had tried to create and Edit tasks here, and the app would crash due to a null reference
+            // Now NewTaskSheet handles stuff after the New Task button is pressed
+            NewTaskSheet(null).show(supportFragmentManager, "newTaskTag")
         }
     }
 
-    @SuppressLint("NewApi")
-    private fun showTimePicker(onTimeSet: (LocalTime) -> Unit) {
-        val picker = MaterialTimePicker.Builder()
-            .setTimeFormat(TimeFormat1.CLOCK_24H)
-            .setHour(12)
-            .setMinute(0)
-            .setTitleText("Select Due Time")
-            .build()
 
-        picker.addOnPositiveButtonClickListener {
-            onTimeSet(LocalTime.of(picker.hour, picker.minute))
-        }
-
-        picker.show(supportFragmentManager, "tag")
-    }
-
+    // These should be used to edit tasks from the RecyclerView/non-fragment screen, but it didn't work
+    // I think the items in task_item.xml should be EditTexts and not ImageViews
     override fun editTaskItem(taskItem: TaskItem) {
         NewTaskSheet(taskItem).show(supportFragmentManager, "newTaskTag")
     }
-
+    //Again, this could cross out once the done (circle icon) is pressed, but it doesn't
     override fun completeTaskItem(taskItem: TaskItem) {
         taskViewModel.setCompleted(taskItem.id)
     }
 
-    fun deleteTaskItem(taskItem: TaskItem) {
+    override fun deleteTaskItem(taskItem: TaskItem) {
         taskViewModel.deleteTaskItem(taskItem.id)
     }
-
 }
 
 

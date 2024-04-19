@@ -13,19 +13,42 @@
 
     <!-- EditText for task title: It’s imperative to collect user input correctly.
          You MUST retrieve the text entered here in NewTaskSheet.kt to create a new task. -->
-    <EditText
+    <TextView
         android:id="@+id/etTaskTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/task_title"
-        android:inputType="text"/>
+        android:text="New Task"
+        android:textSize="25sp"
+        android:layout_gravity="center"
+        android:layout_margin="16dp"/>
 
     <!-- Save button: This is NOT optional. It triggers the task saving logic.
          Failing to implement the onClick listener for this button will render your task addition feature useless. -->
+    <EditText
+        android:id="@+id/etName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Name"
+        android:inputType="text"/>
+
+    <EditText
+        android:id="@+id/etDesc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter task here"
+        android:inputType="text"/>
+
+    <Button
+        android:id="@+id/btnTimePicker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Time" />
+
     <Button
         android:id="@+id/btnSaveTask"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/save" />
+        android:text="Save" />
 
 </LinearLayout>

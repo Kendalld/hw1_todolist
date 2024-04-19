@@ -4,12 +4,12 @@ plugins {
 }
 
 android {
-    namespace = "com.example.hw1_template"
+    namespace = "com.example.hw1_todolist"
     compileSdk = 34
 
     defaultConfig {
         applicationId = "com.example.hw1_todolist"
-        minSdk = 24
+        minSdk = 32
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -40,6 +40,7 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.recyclerview)

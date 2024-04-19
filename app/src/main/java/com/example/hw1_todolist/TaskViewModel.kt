@@ -1,5 +1,7 @@
 package com.example.hw1_todolist
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.MutableLiveData
@@ -20,7 +22,7 @@ class TaskViewModel : ViewModel() {
 
     // Adds TaskItem
     fun addTaskItem(name: String, desc: String, dueTime: LocalTime?, completedDate: LocalDate?) {
-        val newTask = TaskItem(name, desc, dueTime, completedDate, nextTaskId())
+        val newTask = TaskItem(name, desc, dueTime = null, completedDate, nextTaskId())
         val updatedList = _taskItems.value.orEmpty() + newTask
         _taskItems.value = updatedList
     }
@@ -28,7 +30,7 @@ class TaskViewModel : ViewModel() {
     // Updates a task item by its ID with new details
     fun updateTaskItem(id: Int, name: String, desc: String, dueTime: LocalTime?) {
         _taskItems.value = _taskItems.value?.map {// map used to iterate through the list of task items, and return a new list with the updated task item
-            if (it.id == id) it.copy(name = name, desc = desc, dueTime = dueTime) else it // it is used in lambdas to access elements in list (here it's the TaskItem)
+            if (it.id == id) it.copy(name = name, desc = desc, dueTime = null) else it // it is used in lambdas to access elements in list (here it's the TaskItem)
         }
     }
 

@@ -5,52 +5,41 @@
 
 <!-- RelativeLayout: Allows you to position your UI elements relative to each other or to the parent container.
 Elements can be aligned on any side of the view and can overlap. This layout is flexible and useful for complex designs.-->
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".MainActivity">
 
     <!-- RecyclerView is CRUCIAL here. It displays the list of tasks.
          You MUST set the layout manager and adapter in MainActivity.kt.
          If you neglect this, your app will NOT display any tasks. It’s imperative to bind data correctly. -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvTasks"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:listitem="@layout/task_item_cell"
-        android:descendantFocusability="blocksDescendants" />
 
     <!-- FloatingActionButton: This is NOT just a decorative element.
          It’s essential for adding new tasks. When clicked, it MUST navigate to NewTaskSheet.kt.
          Failure to implement this functionality will result in an incomplete application flow. -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabNewTask"
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvTasks"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:descendantFocusability="blocksDescendants"
+        tools:listitem="@layout/task_item_cell" />
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="New Task"
+        android:id="@+id/fabNewTask"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_margin="16dp"
-        android:src="@drawable/ic_add"
-        android:contentDescription="@string/add_new_task" />
+        android:padding="5dp"
+        android:layout_margin="20dp"
+        app:icon="@drawable/ic_add"
+        />
 
-    <EditText
-        android:id="@+id/editTextTask"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:hint="Enter task here" />
 
-    <ImageView
-        android:id="@+id/ivDeleteTask"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:src="@drawable/delete_24"
-        android:contentDescription="@string/delete_task" />
 
 </RelativeLayout>
 

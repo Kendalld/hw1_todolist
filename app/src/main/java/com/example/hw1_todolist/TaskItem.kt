@@ -8,7 +8,7 @@ import java.time.LocalTime
 data class TaskItem(
     var name: String,
     var desc: String,
-    var dueTime: LocalTime?,
+    var dueTime: LocalTime?, // This feature is broken...
     var completedDate: LocalDate? = null, // defaulted to null
     // NewTaskSheet has this implemented to add very simple rolling counter
     // It would be better if I used a UUID and spool for this
